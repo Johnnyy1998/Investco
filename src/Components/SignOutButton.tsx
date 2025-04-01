@@ -4,7 +4,7 @@ import useStore from "../store";
 
 function SignOutButton() {
   const navigate = useNavigate();
-  const { setError, error, user } = useStore();
+  const { setError, user } = useStore();
 
   const handleSignOut = async () => {
     let { error } = await supabase.auth.signOut();
