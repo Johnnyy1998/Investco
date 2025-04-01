@@ -1,11 +1,13 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import HomeLayout from "./pages/HomeLayout";
 import Landing from "./pages/Landing";
 import Portfolio from "./pages/Portfolio";
+import ProtedctedRoute from "./Components/ProtedctedRoute";
+import PortfolioValue from "./pages/PortfolioValue";
+import About from "./pages/About";
 
 const router = createBrowserRouter([
   {
@@ -17,8 +19,8 @@ const router = createBrowserRouter([
         index: true,
       },
       {
-        element: <Dashboard />,
-        path: "/dashboard",
+        element: <About />,
+        path: "/about",
       },
       {
         element: <Login />,
@@ -29,8 +31,20 @@ const router = createBrowserRouter([
         path: "/signup",
       },
       {
-        element: <Portfolio />,
+        element: (
+          <ProtedctedRoute>
+            <Portfolio />
+          </ProtedctedRoute>
+        ),
         path: "/portfolio",
+      },
+      {
+        element: (
+          <ProtedctedRoute>
+            <PortfolioValue />
+          </ProtedctedRoute>
+        ),
+        path: "/portfolioValue",
       },
     ],
   },

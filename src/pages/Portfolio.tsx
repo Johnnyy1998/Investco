@@ -6,11 +6,13 @@ import {
 import InstrumentTable from "../Components/Portfolio/InstrumentTable";
 import { Instrument } from "../utils/Types";
 import ChartLine from "../Components/Portfolio/ChartLine";
-import { TotalInvested } from "../Components/Portfolio/TotalInvested";
+import { ChartBar } from "../Components/Portfolio/ChartBar";
+import Button from "../Components/form/Button";
+import { Link } from "react-router-dom";
 
 function Portfolio() {
   const [error, setError] = useState<string | null>();
-  const [data, setData] = useState</* any[] */ Instrument[]>([]); // State for storing data
+  const [data, setData] = useState<Instrument[]>([]); // State for storing data
 
   useEffect(() => {
     async function fetchData() {
@@ -45,7 +47,8 @@ function Portfolio() {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-7 gap-4">
+        {/* <div className="grid grid-cols-7 gap-1 md:gap-4"> */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-7 gap-4">
           <div className="flex flex-col gap-1 ">
             <label className="label">Instrument</label>
             <input name="instrument" type="text" className="input" />
@@ -88,17 +91,25 @@ function Portfolio() {
               step="any"
             />
           </div>
-          <button
-            type="submit"
-            className="flex-grow rounded-xl shadow-md bg-sky-100 "
-          >
-            Add
-          </button>
+          <div className="flex flex-col col-span-1 sm:col-span-2 md:col-span-1">
+            <Button text="Add" />
+          </div>
         </div>
       </form>
-      <InstrumentTable data={data} setData={setData} />
-      <TotalInvested data={data} />
-      <ChartLine data={data} />
+      {error ? (
+        <p>Something went wrong, try it later</p>
+      ) : (
+        <>
+          <InstrumentTable data={data} setData={setData} />
+          <ChartBar data={data} />
+          <ChartLine data={data} />
+          <p className="text-center">
+            <Link to="/portfolioValue">
+              For more info, look at current value of your portfolio
+            </Link>
+          </p>
+        </>
+      )}
     </>
   );
 }

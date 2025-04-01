@@ -4,7 +4,6 @@ import useStore from "../store";
 import LandingChart from "../Components/Landing/LandingChart";
 function Landing() {
   const { user } = useStore();
-  console.log(user);
   return (
     <div>
       <h1 className="text-4xl text-sky-600 font-semibold">

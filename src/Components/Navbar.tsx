@@ -4,6 +4,7 @@ import useStore from "../store";
 
 function Navbar() {
   const { user } = useStore();
+
   return (
     <div className="navbar bg-base-100 shadow-sm lg:px-32">
       <div className="navbar-start">
@@ -29,15 +30,22 @@ function Navbar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
+            <li>
+              <Link to="/">Landing</Link>
+            </li>
             {/* linky na pages */}
+            {user && (
+              <>
+                <li>
+                  <Link to="/portfolio">Orders</Link>
+                </li>
+                <li>
+                  <Link to="/portfolioValue">Portfolio Value</Link>
+                </li>
+              </>
+            )}
             <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/portfolio">Portfolio</Link>
-            </li>
-            <li>
-              <a>About</a>
+              <Link to="/about">About</Link>
             </li>
           </ul>
         </div>
@@ -50,28 +58,34 @@ function Navbar() {
       </div>
       <div className="navbar-end">
         {user ? (
-          <div className="dropdown">
-            <div
-              tabIndex={1}
-              role="button"
-              className="btn btn-ghost btn-circle avatar"
-            >
-              <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                />
+          <>
+            <span className="font-semibold text-pretty px-3 text-sm">
+              {user?.user_metadata?.email}
+            </span>
+
+            <div className="dropdown">
+              <div
+                tabIndex={1}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <div className="w-10 rounded-full">
+                  <img
+                    alt="Tailwind CSS Navbar component"
+                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  />
+                </div>
               </div>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-32 p-2 shadow"
+              >
+                <li>
+                  <SignOutButton />
+                </li>
+              </ul>
             </div>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-32 p-2 shadow"
-            >
-              <li>
-                <SignOutButton />
-              </li>
-            </ul>
-          </div>
+          </>
         ) : (
           <div className="flex gap-2">
             <Link to="/login" className="text-sm">

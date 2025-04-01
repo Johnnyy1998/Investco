@@ -7,3 +7,9 @@ export type Instrument = {
   fee: number;
   typeOrder: string;
 };
+
+export type StockData = {
+  instrument: string;
+  totalshares: number;
+  price: number | null;
+};

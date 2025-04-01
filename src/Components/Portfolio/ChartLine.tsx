@@ -8,7 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { format } from "date-fns"; // importujte funkcionalitu pro formátování dat
+import { format } from "date-fns";
 
 function ChartLine({ data }: { data: Instrument[] }) {
   const chartData = data
@@ -16,11 +16,11 @@ function ChartLine({ data }: { data: Instrument[] }) {
       dtime: format(new Date(item.created_at), "dd MMM yy"),
       value:
         item.typeOrder === "Buy"
-          ? item.units * item.pricePerUnit // Hodnota pro Y osu
+          ? item.units * item.pricePerUnit
           : -item.units * item.pricePerUnit,
     }))
     .slice(0, 10);
-  console.log(chartData);
+
   return (
     <div className="mt-10">
       {chartData.length > 0 && (
