@@ -33,7 +33,7 @@ export async function addInstrument(e: React.FormEvent<HTMLFormElement>) {
   price = price === "" ? null : price;
   units = units === "" ? null : units;
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("Instruments")
     .insert([
       {
