@@ -9,6 +9,7 @@ import ChartLine from "../Components/Portfolio/ChartLine";
 import { ChartBar } from "../Components/Portfolio/ChartBar";
 import Button from "../Components/form/Button";
 import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 function Portfolio() {
   const [error, setError] = useState<string | null>();
@@ -50,7 +51,7 @@ function Portfolio() {
         {/* <div className="grid grid-cols-7 gap-1 md:gap-4"> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-7 gap-4">
           <div className="flex flex-col gap-1 ">
-            <label className="label">Instrument</label>
+            <label className="label">Ticker</label>
             <input name="instrument" type="text" className="input" />
           </div>
           <div className="flex flex-col gap-1 ">
@@ -93,6 +94,7 @@ function Portfolio() {
           </div>
           <div className="flex flex-col col-span-1 sm:col-span-2 md:col-span-1">
             <Button text="Add" />
+            <ToastContainer position="bottom-right" autoClose={2000} />
           </div>
         </div>
       </form>

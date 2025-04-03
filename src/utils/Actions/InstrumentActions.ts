@@ -1,5 +1,5 @@
 import { supabase } from "../../supabaseClient";
-
+import { toast } from "react-toastify";
 export async function fetchUserInstruments() {
   const {
     data: { user },
@@ -22,16 +22,35 @@ export async function addInstrument(e: React.FormEvent<HTMLFormElement>) {
   } = await supabase.auth.getUser();
 
   const formData = new FormData(e.target as HTMLFormElement);
-  let instrument = formData.get("instrument") as string | null;
-  let typeOrder = formData.get("typeOrder") as string | null;
-  let units = formData.get("units") as string | null;
-  let price = formData.get("price") as string | null;
-  let fee = formData.get("fee") as string | null;
-  let dtime = formData.get("dtime") as string | null;
 
-  fee = fee === "" ? null : fee;
-  price = price === "" ? null : price;
-  units = units === "" ? null : units;
+  // Sjednot prazdne hodnoty na null
+  const getFormValue = (key: string): string | null => {
+    const value = formData.get(key) as string;
+    return value === "" ? null : value;
+  };
+
+  // Získání hodnot z formuláře
+  const instrument = getFormValue("instrument");
+  const typeOrder = getFormValue("typeOrder");
+  const units = getFormValue("units");
+  const price = getFormValue("price");
+  const fee = getFormValue("fee");
+  const dtime = getFormValue("dtime");
+
+  // Kontrola chybějících hodnot
+  const missingFields = [];
+  if (!instrument) missingFields.push("Ticker");
+  if (!price) missingFields.push("Price");
+  if (!units) missingFields.push("Units");
+
+  // Pokud nějaká hodnota chybí, zobrazí chybu
+  if (missingFields.length > 0) {
+    // .join(", ") metoda vezme všechny položky v poli a spojí je do jednoho řetězce oddělený čárkami
+    toast.warning(
+      `Please add the following information: ${missingFields.join(", ")}`
+    );
+    return;
+  }
 
   const { error } = await supabase
     .from("Instruments")
@@ -49,9 +68,11 @@ export async function addInstrument(e: React.FormEvent<HTMLFormElement>) {
     .select();
 
   if (error) {
-    console.log("connection failed");
+    toast.error("Connection failed, please try it later");
+    return;
   } else {
-    console.log("added");
+    toast.success("Successfully added");
+    return;
   }
 }
 
@@ -87,9 +108,7 @@ export async function getPortfolioValue() {
     console.error("Chyba z RPC volání get_units_by_stock:", error);
     return [];
   }
-
-  console.log("Výstup z get_units_by_stock:", data);
-
+  // api key
   const key = import.meta.env.VITE_TWELVE_DATA_CLIENT_KEY;
 
   const instruments = data as StockData[]; // Pokud není data.array
