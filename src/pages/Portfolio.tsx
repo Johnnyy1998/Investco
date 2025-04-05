@@ -7,9 +7,9 @@ import InstrumentTable from "../Components/Portfolio/InstrumentTable";
 import { Instrument } from "../utils/Types";
 import ChartLine from "../Components/Portfolio/ChartLine";
 import { ChartBar } from "../Components/Portfolio/ChartBar";
-import Button from "../Components/form/Button";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { tickers } from "../utils/format";
 
 function Portfolio() {
   const [error, setError] = useState<string | null>();
@@ -45,6 +45,27 @@ function Portfolio() {
     }
   };
 
+  // Ticker input handling
+  const [inputValue, setInputValue] = useState("");
+  const [filteredOptions, setFilteredOptions] = useState(tickers);
+  const [isValid, setIsValid] = useState(true);
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const value = event.target.value;
+    setInputValue(value);
+
+    const Filtred = tickers.filter((option) =>
+      option.toLowerCase().includes(value.toLowerCase())
+    );
+    if (Filtred.length < 1) setIsValid(false);
+    else setIsValid(true);
+    setFilteredOptions(Filtred.slice(0, 10));
+  }
+
+  function handleSelect(option: string) {
+    setInputValue(option);
+    setFilteredOptions([]);
+  }
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -52,8 +73,32 @@ function Portfolio() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-7 gap-4">
           <div className="flex flex-col gap-1 ">
             <label className="label">Ticker</label>
-            <input name="instrument" type="text" className="input" />
+            <>
+              <input
+                type="text"
+                placeholder="Choose ticker"
+                className="input"
+                name="instrument"
+                value={inputValue}
+                onChange={handleChange}
+                autoComplete="off"
+              />
+              {inputValue && (
+                <ul className="autocomplete-list">
+                  {filteredOptions.map((option, index) => (
+                    <li
+                      key={index}
+                      onClick={() => handleSelect(option)}
+                      className="autocomplete-item autocomplete-item:hover"
+                    >
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
           </div>
+
           <div className="flex flex-col gap-1 ">
             <label className="label">TypeOrder</label>
             <select name="typeOrder" className="select">
@@ -93,10 +138,20 @@ function Portfolio() {
             />
           </div>
           <div className="flex flex-col col-span-1 sm:col-span-2 md:col-span-1">
-            <Button text="Add" />
-            <ToastContainer position="bottom-right" autoClose={2000} />
+            {/* < Button text="Add" />  */}
+            <button
+              type="submit"
+              disabled={!isValid}
+              className="flex-grow rounded-xl shadow-md bg-sky-100 "
+            >
+              Add
+            </button>
+            <ToastContainer position="top-right" autoClose={1800} />
           </div>
         </div>
+        {!isValid && (
+          <p className="text-red-600 font-semibold ">Ticker does not exists</p>
+        )}
       </form>
       {error ? (
         <p>Something went wrong, try it later</p>
@@ -105,8 +160,8 @@ function Portfolio() {
           <InstrumentTable data={data} setData={setData} />
           <ChartBar data={data} />
           <ChartLine data={data} />
-          <p className="text-center">
-            <Link to="/portfolioValue">
+          <p className="text-center mt-10 text-sm underline">
+            <Link to="/portfolioValue" className="text-black">
               For more info, look at current value of your portfolio
             </Link>
           </p>

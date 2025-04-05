@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { deleteInstrument } from "../../utils/Actions/InstrumentActions";
 import { Instrument } from "../../utils/Types";
 
@@ -14,6 +15,23 @@ function InstrumentTable({ data, setData }: InstrumentTableProps) {
       setData(data);
     }
   };
+
+  const [page, setPage] = useState(1);
+  const maxItemsOnPage = 8;
+  const maxPage = Math.ceil(data.length / maxItemsOnPage);
+
+  const NextPage = () => {
+    if (page === maxPage) return;
+    setPage(page + 1);
+  };
+  const PreviousPage = () => {
+    if (page === 1) return;
+    setPage(page - 1);
+  };
+  const startItem = page * maxItemsOnPage - 8;
+  const endItem = page * maxItemsOnPage;
+  const currentData = data.slice(startItem, endItem);
+
   return (
     <>
       <div className="overflow-x-auto">
@@ -30,7 +48,7 @@ function InstrumentTable({ data, setData }: InstrumentTableProps) {
             </tr>
           </thead>
           <tbody>
-            {data.map((instruments) => {
+            {currentData.map((instruments) => {
               const {
                 id,
                 instrument,
@@ -60,6 +78,31 @@ function InstrumentTable({ data, setData }: InstrumentTableProps) {
             })}
           </tbody>
         </table>
+        {data.length > 0 && (
+          <div className="grid grid-cols-3 mt-3 mb-3">
+            {page === 1 ? (
+              <div></div>
+            ) : (
+              <button
+                className="btn btn-primary justify-self-start ml-2"
+                onClick={PreviousPage}
+              >
+                Previous
+              </button>
+            )}
+            <p className="font-semibold text-center">Page: {page}</p>
+            {page === maxPage || maxPage === 1 ? (
+              <div></div>
+            ) : (
+              <button
+                className="btn btn-primary justify-self-end mr-2"
+                onClick={NextPage}
+              >
+                Next
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </>
   );

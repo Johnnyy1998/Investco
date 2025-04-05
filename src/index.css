@@ -8,6 +8,30 @@
   }
 }
 
+/* Styly pro seznam nápověd */
+.autocomplete-list {
+  max-height: 200px; /* Maximální výška seznamu */
+  overflow-y: auto; /* Povolí scrollování, pokud je položek více než 10 */
+  border-radius: 4px;
+  margin-top: 69px;
+  padding: 0;
+  background-color: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Jemný stín */
+  position: absolute; /* Upevnění nabídky nad ostatní obsah */
+  width: 120px; /* Šířka seznamu bude stejná jako input */
+  z-index: 10; /* Zajistí, že nabídka bude nad ostatním obsahem */
+}
+
+/* Styly pro jednotlivé položky */
+.autocomplete-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.autocomplete-item:hover {
+  background-color: #f0f0f0; /* Zvýraznění položky při najetí myší */
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

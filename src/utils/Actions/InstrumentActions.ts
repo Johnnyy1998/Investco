@@ -30,7 +30,7 @@ export async function addInstrument(e: React.FormEvent<HTMLFormElement>) {
   };
 
   // Získání hodnot z formuláře
-  const instrument = getFormValue("instrument");
+  const instrument = getFormValue("instrument")?.toUpperCase();
   const typeOrder = getFormValue("typeOrder");
   const units = getFormValue("units");
   const price = getFormValue("price");
@@ -42,7 +42,7 @@ export async function addInstrument(e: React.FormEvent<HTMLFormElement>) {
   if (!instrument) missingFields.push("Ticker");
   if (!price) missingFields.push("Price");
   if (!units) missingFields.push("Units");
-
+  if (!dtime) missingFields.push("Date");
   // Pokud nějaká hodnota chybí, zobrazí chybu
   if (missingFields.length > 0) {
     // .join(", ") metoda vezme všechny položky v poli a spojí je do jednoho řetězce oddělený čárkami

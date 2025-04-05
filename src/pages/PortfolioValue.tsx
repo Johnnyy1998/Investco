@@ -34,7 +34,7 @@ function ValueOfInvestments() {
     <>
       {data.length > 0 ? (
         <>
-          <h1 className="text-3xl text-center font-semibold">
+          <h1 className="text-3xl text-center font-semibold md:-mb-5 mb-10">
             Current value of Portfolio based on your instruments
           </h1>
 
@@ -64,7 +64,7 @@ function ValueOfInvestments() {
                 ))}
                 <tr className="bg-gray-200 font-semibold">
                   <td className="px-4 py-2 border-t text-left">
-                    Total Current Account
+                    Portfolio value
                   </td>
                   <td className="px-4 py-2 border-t"></td>
                   <td className="px-4 py-2 border-t text-right">
