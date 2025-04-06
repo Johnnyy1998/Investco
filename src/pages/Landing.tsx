@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import landingPicture from "../assets/ladnginPicture.jpg";
 import useStore from "../store";
 import LandingChart from "../Components/Landing/LandingChart";
+import { UserPlus, Upload, LineChart } from "lucide-react";
+
 function Landing() {
   const { user } = useStore();
   return (
@@ -39,11 +41,36 @@ function Landing() {
       {!user && (
         <div className="border-2 mt-4 rounded-lg">
           <button className="w-full">
-            <Link to="/login">Start Now!</Link>
+            <Link to="/signup">Start Now!</Link>
           </button>
         </div>
       )}
       <LandingChart />
+      <div className="mt-10 flex flex-col gap-3 sm:flex-row  justify-between ">
+        <div className="border-2 w-full text-center p-3 flex flex-col gap-2 rounded-l-xl shadow-lg shadow-blue-500/50">
+          <UserPlus className="mx-auto h-8 w-8 text-blue-500" />
+          <p className="text-gray-500">1. Step</p>
+          <p className="font-semibold text-xl">Sign up</p>
+          <Link
+            to="/signup"
+            className="no-underline font-normal text-gray-500 hover:text-gray-500"
+          >
+            <p className="">Just click here to sign up</p>
+          </Link>
+        </div>
+        <div className="border-2 w-full text-center p-3 flex flex-col gap-2 shadow-lg shadow-blue-500/50">
+          <Upload className="mx-auto h-8 w-8 text-blue-500" />
+          <p className="text-gray-500">2. Step</p>
+          <p className="font-semibold text-xl">Load data</p>
+          <p className="text-gray-500">Easy recording of trades</p>
+        </div>
+        <div className="border-2 w-full text-center p-3 flex flex-col gap-2 rounded-r-xl shadow-lg shadow-blue-500/50">
+          <LineChart className="mx-auto h-8 w-8 text-blue-500" />
+          <p className="text-gray-500">3. Step</p>
+          <p className="font-semibold text-xl">Perfomance</p>
+          <p className="text-gray-500">See Performance of your portfolio</p>
+        </div>
+      </div>
     </div>
   );
 }

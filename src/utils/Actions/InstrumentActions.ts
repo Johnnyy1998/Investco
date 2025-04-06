@@ -1,5 +1,6 @@
 import { supabase } from "../../supabaseClient";
 import { toast } from "react-toastify";
+import { tickers } from "../format";
 export async function fetchUserInstruments() {
   const {
     data: { user },
@@ -36,6 +37,11 @@ export async function addInstrument(e: React.FormEvent<HTMLFormElement>) {
   const price = getFormValue("price");
   const fee = getFormValue("fee");
   const dtime = getFormValue("dtime");
+
+  if (instrument && !tickers.includes(instrument)) {
+    toast.warning("Wrong name of instrument, try it again");
+    return;
+  }
 
   // Kontrola chybějících hodnot
   const missingFields = [];
