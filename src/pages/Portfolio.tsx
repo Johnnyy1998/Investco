@@ -1,49 +1,36 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   addInstrument,
   fetchUserInstruments,
 } from "../utils/Actions/InstrumentActions";
 import InstrumentTable from "../Components/Portfolio/InstrumentTable";
-import { Instrument } from "../utils/Types";
+
 import ChartLine from "../Components/Portfolio/ChartLine";
 import { ChartBar } from "../Components/Portfolio/ChartBar";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { tickers } from "../utils/format";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 function Portfolio() {
-  const [error, setError] = useState<string | null>();
-  const [data, setData] = useState<Instrument[]>([]); // State for storing data
+  const { isPending, isError, error, data, refetch } = useQuery({
+    queryKey: ["Orders"],
+    queryFn: fetchUserInstruments,
+    staleTime: 5 * 60 * 1000,
+  });
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const fetchedData = await fetchUserInstruments();
-        if (fetchedData) {
-          setData(fetchedData);
-        }
-      } catch (err) {
-        setError("Error fetching data");
-      }
-    }
+  const queryClient = useQueryClient();
 
-    fetchData();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      await addInstrument(e);
-      const updatedData = await fetchUserInstruments();
-      if (updatedData) {
-        setData(updatedData);
-      } else {
-        setData([]);
-      }
-    } catch (err) {
-      setError("Error adding instrument");
-    }
-  };
+  const mutation = useMutation({
+    mutationFn: (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      return addInstrument(e);
+    },
+    onSuccess: () => {
+      refetch();
+      queryClient.invalidateQueries({ queryKey: ["PortfolioValue"] });
+    },
+  });
 
   // Ticker input handling
   const [inputValue, setInputValue] = useState("");
@@ -67,9 +54,16 @@ function Portfolio() {
     setFilteredOptions([]);
   }
 
+  if (isPending) {
+    return <span>Loading...</span>;
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => mutation.mutate(e)}>
         {/* <div className="grid grid-cols-7 gap-1 md:gap-4"> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-7 gap-4">
           <div className="flex flex-col gap-1 ">
@@ -158,7 +152,7 @@ function Portfolio() {
         <p>Something went wrong, try it later</p>
       ) : (
         <>
-          <InstrumentTable data={data} setData={setData} />
+          <InstrumentTable data={data} refetch={refetch} />
           <ChartBar data={data} />
           <ChartLine data={data} />
           <p className="text-center mt-10 text-sm underline">

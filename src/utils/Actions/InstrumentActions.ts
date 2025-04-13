@@ -96,7 +96,7 @@ export async function getPortfolioValue() {
     instrument: string;
     totalshares: number;
   };
-
+  console.log("volam fce");
   const {
     data: { user },
     error: userError,

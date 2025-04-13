@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { deleteInstrument } from "../../utils/Actions/InstrumentActions";
 import { Instrument } from "../../utils/Types";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Definice typu pro props
 interface InstrumentTableProps {
   data: Instrument[];
-  setData: React.Dispatch<React.SetStateAction<Instrument[]>>; // Funkce pro aktualizaci stavu
+  refetch: any;
 }
 
-function InstrumentTable({ data, setData }: InstrumentTableProps) {
+function InstrumentTable({ data, refetch }: InstrumentTableProps) {
+  const queryClient = useQueryClient();
   const handleDelete = async (id: number) => {
     const data = await deleteInstrument({ id });
     if (data) {
-      setData(data);
+      refetch();
+      queryClient.invalidateQueries({ queryKey: ["PortfolioValue"] });
     }
   };
 

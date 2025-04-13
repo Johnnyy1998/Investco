@@ -1,29 +1,23 @@
-import { useEffect, useState } from "react";
 import { getPortfolioValue } from "../utils/Actions/InstrumentActions";
 import { formatCurrency } from "../utils/format";
-import { StockData } from "../utils/Types";
 import ChartPie from "../Components/Portfolio/ChartPie";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 function ValueOfInvestments() {
-  const [error, setError] = useState<string | null>();
-  const [data, setData] = useState<StockData[]>([]); // State for storing data
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ["PortfolioValue"],
+    queryFn: getPortfolioValue,
+    staleTime: 5 * 60 * 1000,
+  });
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const fetchedData = await getPortfolioValue();
-        if (fetchedData) {
-          setData(fetchedData);
-          console.log(fetchedData);
-        }
-      } catch (err) {
-        setError("Error fetching data");
-      }
-    }
+  if (isPending) {
+    return <span>Loading...</span>;
+  }
 
-    fetchData();
-  }, []);
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
 
   const totalPrice = data?.reduce(
     (sum, item) => sum + (item.price ?? 0) * (item.totalshares ?? 0),
