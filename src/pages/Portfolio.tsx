@@ -49,6 +49,7 @@ function Portfolio() {
   const [inputValue, setInputValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(tickers);
   const [isValid, setIsValid] = useState(true);
+
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.value;
     setInputValue(value);

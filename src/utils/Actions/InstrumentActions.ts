@@ -1,11 +1,12 @@
 import { supabase } from "../../supabaseClient";
 import { toast } from "react-toastify";
 import { tickers } from "../format";
-export async function fetchUserInstruments() {
+import { Instrument } from "../Types";
+export async function fetchUserInstruments(): Promise<Instrument[]> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
+  console.log("i am back");
   let { data, error } = await supabase
     .from("Instruments")
     .select("*")
@@ -14,7 +15,7 @@ export async function fetchUserInstruments() {
   if (error) {
     return [];
   }
-  return data;
+  return data as Instrument[];
 }
 
 export async function addInstrument(e: React.FormEvent<HTMLFormElement>) {
