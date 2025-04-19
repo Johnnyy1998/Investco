@@ -29,6 +29,7 @@ function Portfolio() {
     onSuccess: () => {
       refetch();
       queryClient.invalidateQueries({ queryKey: ["PortfolioValue"] });
+      queryClient.invalidateQueries({ queryKey: ["TotalInvested"] });
     },
   });
 
@@ -153,7 +154,7 @@ function Portfolio() {
       ) : (
         <>
           <InstrumentTable data={data} refetch={refetch} />
-          <ChartBar data={data} />
+          <ChartBar />
           <ChartLine data={data} />
           <p className="text-center mt-10 text-sm underline">
             <Link to="/portfolioValue" className="text-black">

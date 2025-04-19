@@ -3,35 +3,25 @@ import {
   BarChart,
   CartesianGrid,
   ResponsiveContainer,
-  Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import { Instrument } from "../../utils/Types";
+import { useQuery } from "@tanstack/react-query";
+import { getInvestedPerInstrument } from "../../utils/Actions/InstrumentActions";
 
-export function ChartBar({ data }: { data: Instrument[] }) {
-  const total = data.reduce((acc, item) => {
-    if (item.typeOrder === "Buy") {
-      if (acc[item.instrument]) {
-        acc[item.instrument] += item.units * item.pricePerUnit;
-      } else {
-        acc[item.instrument] = item.units * item.pricePerUnit;
-      }
-    } else {
-      if (acc[item.instrument]) {
-        acc[item.instrument] -= item.units * item.pricePerUnit;
-      } else {
-        acc[item.instrument] = -item.units * item.pricePerUnit;
-      }
-    }
-    return acc;
-  }, {} as { [key: string]: number });
+export function ChartBar() {
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ["TotalInvested"],
+    queryFn: getInvestedPerInstrument,
+    staleTime: 5 * 60 * 1000,
+  });
 
-  // Transform the total object into an array for charting
-  const chartData = Object.keys(total).map((key) => ({
-    name: key,
-    uv: total[key], // use 'uv' to map values to BarChart dataKey
-  }));
+  if (isPending) {
+    return <span>Loading ..</span>;
+  }
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
 
   const portfolioStatus = (
     <div className="text-center">
@@ -53,18 +43,23 @@ export function ChartBar({ data }: { data: Instrument[] }) {
             Total Invested per Instrument
           </h1>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
+            <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis dataKey="instrument" />
               <YAxis
                 tickFormatter={
                   (tick) => `${tick.toLocaleString()}` // Format Y-axis labels with spaces and currency
                 }
               />
-              <Bar dataKey="uv" fill="#8884d8" />
-              <Tooltip />
+              <Bar dataKey="investedperinstrument" fill="#8884d8" />
             </BarChart>
           </ResponsiveContainer>
+          <p className="text-xs text-wrap">
+            The chart shows how much you have invested in each instrument. The
+            value can be negative if you sold the instrument at a higher price
+            than you bought it. Once you have sold all the securities of a given
+            instrument, the chart will not show the instrument
+          </p>
         </>
       ) : (
         portfolioStatus

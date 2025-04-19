@@ -16,6 +16,7 @@ function InstrumentTable({ data, refetch }: InstrumentTableProps) {
     if (data) {
       refetch();
       queryClient.invalidateQueries({ queryKey: ["PortfolioValue"] });
+      queryClient.invalidateQueries({ queryKey: ["TotalInvested"] });
     }
   };
 
@@ -68,7 +69,9 @@ function InstrumentTable({ data, refetch }: InstrumentTableProps) {
                   <td className="text-center">
                     {new Date(created_at).toLocaleDateString()}
                   </td>
-                  <td className="text-center">{units}</td>
+                  <td className="text-center">
+                    {typeOrder === "Sell" ? -1 * units : units}
+                  </td>
                   <td className="text-center">{pricePerUnit}</td>
                   <td className="text-center">{fee}</td>
                   <td className="flex justify-end">

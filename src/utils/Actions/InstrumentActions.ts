@@ -2,11 +2,17 @@ import { supabase } from "../../supabaseClient";
 import { toast } from "react-toastify";
 import { tickers } from "../format";
 import { Instrument } from "../Types";
-export async function fetchUserInstruments(): Promise<Instrument[]> {
+
+export async function getUser() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  console.log("i am back");
+  return user;
+}
+
+export async function fetchUserInstruments(): Promise<Instrument[]> {
+  const user = await getUser();
+
   let { data, error } = await supabase
     .from("Instruments")
     .select("*")
@@ -19,9 +25,7 @@ export async function fetchUserInstruments(): Promise<Instrument[]> {
 }
 
 export async function addInstrument(e: React.FormEvent<HTMLFormElement>) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser();
 
   const formData = new FormData(e.target as HTMLFormElement);
 
@@ -34,15 +38,10 @@ export async function addInstrument(e: React.FormEvent<HTMLFormElement>) {
   // Získání hodnot z formuláře
   const instrument = getFormValue("instrument")?.toUpperCase();
   const typeOrder = getFormValue("typeOrder");
-  const units = getFormValue("units");
+  let units = getFormValue("units");
   const price = getFormValue("price");
   const fee = getFormValue("fee");
   const dtime = getFormValue("dtime");
-
-  if (instrument && !tickers.includes(instrument)) {
-    toast.warning("Wrong name of instrument, try it again");
-    return;
-  }
 
   // Kontrola chybějících hodnot
   const missingFields = [];
@@ -57,6 +56,43 @@ export async function addInstrument(e: React.FormEvent<HTMLFormElement>) {
       `Please add the following information: ${missingFields.join(", ")}`
     );
     return;
+  }
+
+  // Kontrola přitomnosti ticketu v seznam možných
+  if (instrument && !tickers.includes(instrument)) {
+    toast.warning("Wrong name of instrument, try it again");
+    return;
+  }
+
+  //Kontrola formatu
+  const wrongFormats = [];
+  if (Number(price) <= 0) wrongFormats.push("Price");
+  if (Number(units) <= 0) wrongFormats.push("Units");
+  if (wrongFormats.length > 0) {
+    toast.warning(
+      `numbers in fields: ${wrongFormats.join(", ")} must be grater than 0`
+    );
+    return;
+  }
+
+  // Sell Lze zadat jen pokud existuje predchozi buy order
+  if (typeOrder === "Sell" && instrument) {
+    const fetchedData = await fetchUserInstruments();
+    console.log(fetchedData);
+    const total = fetchedData.reduce((acc, item) => {
+      if (acc[item.instrument]) {
+        acc[item.instrument] += item.units;
+      } else {
+        acc[item.instrument] = item.units;
+      }
+      return acc;
+    }, {} as { [key: string]: number });
+    if (!total[instrument] || total[instrument] - Number(units) < 0) {
+      toast.warning(`You don't have enough shares of ${instrument} to sell`);
+      return;
+    }
+    // V DB chci mit sell ordery se zapornymi hodnoty units
+    units = (-1 * Number(units)).toString();
   }
 
   const { error } = await supabase
@@ -91,24 +127,29 @@ export async function deleteInstrument({ id }: { id: number }) {
   } else return await fetchUserInstruments();
 }
 
+export async function getInvestedPerInstrument() {
+  const user = await getUser();
+  const { data, error } = await supabase.rpc("get_invested_per_instrument", {
+    uid: user?.id,
+  });
+
+  if (error) {
+    console.error("Chyba z RPC volání get_units_by_stock:", error);
+    return [];
+  }
+  return data;
+}
+
 export async function getPortfolioValue() {
   type StockData = {
     instrument: string;
     totalshares: number;
   };
-  console.log("volam fce");
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
 
-  if (userError || !user) {
-    console.error("Chyba při získávání uživatele:", userError);
-    return [];
-  }
+  const user = await getUser();
 
   const { data, error } = await supabase.rpc("get_units_by_stock", {
-    uid: user.id,
+    uid: user?.id,
   });
 
   if (error) {

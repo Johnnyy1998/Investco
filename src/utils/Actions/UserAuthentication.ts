@@ -20,16 +20,18 @@ export async function handleLogin(
   }
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    console.log(data);
+    //console.log(data);
     if (error) {
       setError("Wrong username or password");
     } else {
       setError(null);
-      if (onSuccess) onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      }
     }
   } catch (err) {
     setError("Connection to DB failed");
