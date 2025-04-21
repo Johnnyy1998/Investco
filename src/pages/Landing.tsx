@@ -47,29 +47,36 @@ function Landing() {
       )}
       <LandingChart />
       <div className="mt-10 flex flex-col gap-3 sm:flex-row  justify-between ">
-        <div className="border-2 w-full text-center p-3 flex flex-col gap-2 rounded-l-xl shadow-lg shadow-blue-500/50">
-          <UserPlus className="mx-auto h-8 w-8 text-blue-500" />
+        <Link
+          to={user ? "/" : "/signup"}
+          className="border-2 w-full text-center p-3 flex flex-col gap-2 rounded-l-xl shadow-lg shadow-blue-500/50"
+        >
+          <UserPlus className="mx-auto h-8 w-8 text-sky-600" />
           <p className="text-gray-500">1. Step</p>
-          <p className="font-semibold text-xl">Sign up</p>
-          <Link
-            to="/signup"
-            className="no-underline font-normal text-gray-500 hover:text-gray-500"
-          >
-            <p className="">Just click here to sign up</p>
-          </Link>
-        </div>
-        <div className="border-2 w-full text-center p-3 flex flex-col gap-2 shadow-lg shadow-blue-500/50">
-          <Upload className="mx-auto h-8 w-8 text-blue-500" />
+          <p className="font-semibold text-xl text-sky-600">Sign up</p>
+
+          <p className="text-gray-500">Just click here to sign up</p>
+        </Link>
+
+        <Link
+          to="/portfolio"
+          className="border-2 w-full text-center p-3 flex flex-col gap-2 shadow-lg shadow-blue-500/50"
+        >
+          <Upload className="mx-auto h-8 w-8 text-sky-600" />
           <p className="text-gray-500">2. Step</p>
-          <p className="font-semibold text-xl">Load data</p>
+          <p className="font-semibold text-xl text-sky-600">Load data</p>
           <p className="text-gray-500">Easy recording of trades</p>
-        </div>
-        <div className="border-2 w-full text-center p-3 flex flex-col gap-2 rounded-r-xl shadow-lg shadow-blue-500/50">
-          <LineChart className="mx-auto h-8 w-8 text-blue-500" />
+        </Link>
+
+        <Link
+          to="/portfolioValue"
+          className="border-2 w-full text-center p-3 flex flex-col gap-2 rounded-r-xl shadow-lg shadow-blue-500/50"
+        >
+          <LineChart className="mx-auto h-8 w-8 text-sky-600" />
           <p className="text-gray-500">3. Step</p>
-          <p className="font-semibold text-xl">Perfomance</p>
+          <p className="font-semibold text-xl text-sky-600">Perfomance</p>
           <p className="text-gray-500">See Performance of your portfolio</p>
-        </div>
+        </Link>
       </div>
     </div>
   );
