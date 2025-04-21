@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { deleteInstrument } from "../../utils/Actions/InstrumentActions";
 import { Instrument } from "../../utils/Types";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,7 +19,7 @@ function InstrumentTable({ data, refetch }: InstrumentTableProps) {
       queryClient.invalidateQueries({ queryKey: ["TotalInvested"] });
     }
   };
-
+  console.log("rendering instrumentTable");
   const [page, setPage] = useState(1);
   const maxItemsOnPage = 8;
   const maxPage = Math.ceil(data.length / maxItemsOnPage);
@@ -114,4 +114,4 @@ function InstrumentTable({ data, refetch }: InstrumentTableProps) {
   );
 }
 
-export default InstrumentTable;
+export default memo(InstrumentTable);

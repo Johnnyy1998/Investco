@@ -8,14 +8,15 @@ import {
 } from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { getInvestedPerInstrument } from "../../utils/Actions/InstrumentActions";
+import { memo } from "react";
 
-export function ChartBar() {
+function ChartBar() {
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["TotalInvested"],
     queryFn: getInvestedPerInstrument,
     staleTime: 5 * 60 * 1000,
   });
-
+  console.log("rendering chartBar");
   if (isPending) {
     return <span>Loading ..</span>;
   }
@@ -67,3 +68,5 @@ export function ChartBar() {
     </div>
   );
 }
+
+export default memo(ChartBar);

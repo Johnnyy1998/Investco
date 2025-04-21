@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { format } from "date-fns";
+import { memo } from "react";
 
 function ChartLine({ data }: { data: Instrument[] }) {
   const chartData = data
@@ -48,4 +49,4 @@ function ChartLine({ data }: { data: Instrument[] }) {
   );
 }
 
-export default ChartLine;
+export default memo(ChartLine);

@@ -6,7 +6,7 @@ import {
 import InstrumentTable from "../Components/Portfolio/InstrumentTable";
 
 import ChartLine from "../Components/Portfolio/ChartLine";
-import { ChartBar } from "../Components/Portfolio/ChartBar";
+import ChartBar from "../Components/Portfolio/ChartBar";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { tickers } from "../utils/format";
